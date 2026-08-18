@@ -21,8 +21,8 @@ app.use((err,req,res,next)=>{
     success:false,
     statusCode,
     message,
-  })
-})
+  });
+});
 
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
