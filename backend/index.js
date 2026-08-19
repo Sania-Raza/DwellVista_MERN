@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import dns from "dns";
+import cors from "cors";
 import userRoute from "./routes/userRoute.js";
 dotenv.config();
 import authRoute from "./routes/authRoute.js";
@@ -12,7 +13,13 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB error:", err));
 
-const app = express();
+  const app= express();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 
