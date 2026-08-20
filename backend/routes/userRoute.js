@@ -2,7 +2,8 @@ import express from "express";
 import User from "../models/userModel.js";
 import upload from "../middleware/upload.js";
 import cloudinary from "../config/cloudinary.js";
-import { test } from "../controllers/userController.js";
+import { test, updateUser } from "../controllers/userController.js";
+import { verifyToken } from "../utlis/verifyUser.js";
 
 const router = express.Router();
 router.get("/test", test);
@@ -59,5 +60,7 @@ router.post("/update-avatar", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post('/update/:id',verifyToken ,updateUser)
 
 export default router;

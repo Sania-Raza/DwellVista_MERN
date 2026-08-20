@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-
+import cookieParser from "cookie-parser";
 import dns from "dns";
 import userRoutes from "./routes/userRoute.js";
 import cors from "cors";
@@ -23,6 +23,7 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/user", userRoutes);
 
 app.use("/api/user", userRoutes);
