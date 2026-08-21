@@ -8,22 +8,33 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async (req, res, next) => {
+  console.log("JWT USER ID:", req.user.id);
+  console.log("PARAM ID:", req.params.id);
+
   if (req.user.id !== req.params.id)
     return next(errorHandler(401, "Forbidden"));
+
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
     }
-    const updateUser = await User.findByIdAndUpdate(req.params.id, {
-      $set: {
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        avatar: req.body.avatar,
+
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
       },
-    }, { returnDocument: "after" })
-    const {password, ...rest} = updateUser._doc;
-    res.status(200).json(rest)
+      { returnDocument: "after" },
+    );
+
+    const { password, ...rest } = updateUser._doc;
+
+    res.status(200).json(rest);
   } catch (error) {
     next(error);
   }

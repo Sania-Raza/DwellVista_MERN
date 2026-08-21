@@ -12,17 +12,21 @@ export default function OAuth() {
       const provider = new GoogleAuthProvider();
       const auth = getAuth(app);
       const result = await signInWithPopup(auth, provider);
-     const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    name: result.user.displayName,
-    email: result.user.email,
-    photo: result.user.photoURL,
-  }),
-});
+     const res = await fetch(
+       `${import.meta.env.VITE_API_URL}/api/auth/google`,
+       {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+         },
+         credentials: "include",
+         body: JSON.stringify({
+           name: result.user.displayName,
+           email: result.user.email,
+           photo: result.user.photoURL,
+         }),
+       },
+     );
       const data = await res.json();
       dispatch(signInSuccess(data));
       navigate('/');
