@@ -64,4 +64,37 @@ router.post("/update-avatar", async (req, res, next) => {
 router.post('/update/:id',verifyToken ,updateUser)
 
 router.delete('/delete/:id',verifyToken,deleteUser);
+
+
+router.post("/upload-image", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image uploaded",
+      });
+    }
+
+    const result = await cloudinary.uploader.upload(
+      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+      {
+        folder: "estate-mern/listings",
+      },
+    );
+
+    return res.status(200).json({
+      success: true,
+      imageUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.log("Cloudinary upload error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Image upload failed",
+    });
+  }
+});
+
+
 export default router;
