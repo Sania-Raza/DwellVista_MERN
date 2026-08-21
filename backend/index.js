@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import dns from "dns";
 import userRoutes from "./routes/userRoute.js";
 import cors from "cors";
+import listingRoutes from "./routes/listingRoutes.js";
+
 
 import authRoute from "./routes/authRoute.js";
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
@@ -25,9 +27,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoute);
+app.use("/api/listing",listingRoutes);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -38,6 +40,7 @@ app.use((err, req, res, next) => {
     message,
   });
 });
+
 console.log(process.env.CLOUDINARY_API_KEY);
 app.listen(3000, () => {
   console.log("Server running at PORT 3000");
