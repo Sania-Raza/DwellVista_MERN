@@ -2,7 +2,7 @@ import express from "express";
 import User from "../models/userModel.js";
 import upload from "../middleware/upload.js";
 import cloudinary from "../config/cloudinary.js";
-import { test, updateUser } from "../controllers/userController.js";
+import { deleteUser, test, updateUser } from "../controllers/userController.js";
 import { verifyToken } from "../utlis/verifyUser.js";
 
 const router = express.Router();
@@ -63,4 +63,5 @@ router.post("/update-avatar", async (req, res, next) => {
 
 router.post('/update/:id',verifyToken ,updateUser)
 
+router.delete('/delete/:id',verifyToken,deleteUser);
 export default router;

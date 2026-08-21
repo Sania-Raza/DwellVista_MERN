@@ -1,76 +1,82 @@
 import { useSelector, useDispatch } from "react-redux";
-import { updateUserSuccess, updateUserStart,updateUserFailure } from "../redux/user/userSlice";
+import {
+  updateUserSuccess,
+  updateUserStart,
+  updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+} from "../redux/user/userSlice";
 import { useEffect, useRef, useState } from "react";
 
 export default function Profile() {
   const dispatch = useDispatch();
   const fileRef = useRef(null);
-    const { loading, error } = useSelector((state) => state.user);
+  const { loading, error } = useSelector((state) => state.user);
   const { currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [formData, setFormData] = useState({});
 
-  const [updateSuccess, setUpdateSuccess]= useState(false);
-
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const handleFileUpload = async () => {
-  try {
-    const formData = new FormData();
-    formData.append("avatar", file);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
 
-    // 1. Upload image to Cloudinary
-    const res = await fetch("/api/user/upload-avatar", {
-      method: "POST",
-      body: formData,
-    });
+      // 1. Upload image to Cloudinary
+      const res = await fetch("/api/user/upload-avatar", {
+        method: "POST",
+        body: formData,
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.message || "Image upload failed");
+      if (!res.ok) {
+        throw new Error(data.message || "Image upload failed");
+      }
+
+      console.log("Cloudinary URL:", data.imageUrl);
+
+      // 2. Save Cloudinary URL in MongoDB
+      const updateRes = await fetch("/api/user/update-avatar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: currentUser._id,
+          avatar: data.imageUrl,
+        }),
+      });
+
+      const updateData = await updateRes.json();
+
+      if (!updateRes.ok) {
+        throw new Error(updateData.message || "Avatar update failed");
+      }
+
+      console.log("User updated:", updateData.user);
+      dispatch(updateUserSuccess(updateData.user));
+      setUploadSuccess(true);
+
+      setTimeout(() => {
+        setUploadSuccess(false);
+      }, 3000);
+    } catch (error) {
+      console.log(error);
     }
-
-    console.log("Cloudinary URL:", data.imageUrl);
-
-    // 2. Save Cloudinary URL in MongoDB
-    const updateRes = await fetch("/api/user/update-avatar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: currentUser._id,
-        avatar: data.imageUrl,
-      }),
-    });
-
-    const updateData = await updateRes.json();
-
-    if (!updateRes.ok) {
-      throw new Error(updateData.message || "Avatar update failed");
+  };
+  useEffect(() => {
+    if (file) {
+      handleFileUpload();
     }
+  }, [file]);
 
-    console.log("User updated:", updateData.user);
-    dispatch(updateUserSuccess(updateData.user));
-    setUploadSuccess(true);
-
-    setTimeout(() => {
-      setUploadSuccess(false);
-    }, 3000);
-  } catch (error) {
-    console.log(error);
-  }
-};
-useEffect(() => {
-  if (file) {
-    handleFileUpload();
-  }
-}, [file]);
-  
-  const handleChange =(e)=>{
-    setFormData({...formData , [e.target.id]: e.target.value});
-  }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,6 +102,25 @@ useEffect(() => {
       dispatch(updateUserFailure(error.message));
     }
   };
+
+  // delete user
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg  mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -149,11 +174,18 @@ useEffect(() => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-800 cursor-pointer">Delete Account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-800 cursor-pointer"
+        >
+          Delete Account
+        </span>
         <span className="text-red-800 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""}</p>
-      <p className="text-green-700 mt-5">{updateSuccess? "User updated successfully" :"" }</p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User updated successfully" : ""}
+      </p>
     </div>
   );
 }

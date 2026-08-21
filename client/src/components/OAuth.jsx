@@ -38,9 +38,9 @@ export default function OAuth() {
     <button
       onClick={handleGoogleClick}
       type="button"
-      className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85"
+      className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-85 flex items-center justify-center gap-2"
     >
-      <FaGoogle className="flex flex-row align-middle" />
+      <FaGoogle />
       Continue with google
     </button>
   );
