@@ -2,7 +2,12 @@ import express from "express";
 import User from "../models/userModel.js";
 import upload from "../middleware/upload.js";
 import cloudinary from "../config/cloudinary.js";
-import { deleteUser, test, updateUser } from "../controllers/userController.js";
+import {
+  deleteUser,
+  test,
+  updateUser,
+  getUserListings,
+} from "../controllers/userController.js";
 import { verifyToken } from "../utlis/verifyUser.js";
 
 const router = express.Router();
@@ -64,7 +69,7 @@ router.post("/update-avatar", async (req, res, next) => {
 router.post('/update/:id',verifyToken ,updateUser)
 
 router.delete('/delete/:id',verifyToken,deleteUser);
-
+router.get('/listings/:id' , verifyToken, getUserListings);
 
 router.post("/upload-image", upload.single("image"), async (req, res) => {
   try {
@@ -95,6 +100,7 @@ router.post("/upload-image", upload.single("image"), async (req, res) => {
     });
   }
 });
+
 
 
 export default router;
