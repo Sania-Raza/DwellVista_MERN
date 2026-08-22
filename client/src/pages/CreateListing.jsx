@@ -59,10 +59,13 @@ export default function CreateListing() {
 
     formData.append("image", file);
 
-    const res = await fetch("/api/user/upload-image", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/user/upload-image`,
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
 
     const data = await res.json();
 
@@ -120,16 +123,19 @@ export default function CreateListing() {
         return setError("Discount price must be lower than regular price");
       setLoading(true);
       setError(false);
-      const res = await fetch("/api/listing/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/listing/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser._id,
+          }),
         },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser._id,
-        }),
-      });
+      );
       const data = await res.json();
       setLoading(false);
       if (data.success === false) {
