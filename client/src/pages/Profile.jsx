@@ -123,6 +123,7 @@ export default function Profile() {
         `${import.meta.env.VITE_API_URL}/api/user/delete/${currentUser._id}`,
         {
           method: "DELETE",
+          credentials: "include",
         },
       );
       const data = await res.json();
@@ -141,6 +142,9 @@ export default function Profile() {
       dispatch(signOutUserStart());
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/signout`,
+        {
+          credentials: "include",
+       }
       );
       const data = await res.json();
       if (data.success === false) {
@@ -159,6 +163,9 @@ export default function Profile() {
       setShowListingsError(false);
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/listings/${currentUser._id}`,
+        {
+    credentials: "include",
+  }
       );
       const data = await res.json();
       if (data.success === false) {
@@ -179,6 +186,7 @@ export default function Profile() {
          `${import.meta.env.VITE_API_URL}/api/listing/delete/${listingId}`,
          {
            method: "DELETE",
+           credentials: "include",
          },
        );
        const data = await res.json();
