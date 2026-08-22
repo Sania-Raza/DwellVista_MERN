@@ -123,7 +123,7 @@ export default function Profile() {
         `${import.meta.env.VITE_API_URL}/api/user/delete/${currentUser._id}`,
         {
           method: "DELETE",
-          credentials: "include",
+          
         },
       );
       const data = await res.json();
@@ -143,7 +143,7 @@ export default function Profile() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/signout`,
         {
-          method: "GET",
+          
           credentials: "include",
        }
       );
@@ -165,7 +165,7 @@ export default function Profile() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/listings/${currentUser._id}`,
         {
-          method: "GET",
+          
     credentials: "include",
   }
       );
@@ -188,7 +188,7 @@ export default function Profile() {
          `${import.meta.env.VITE_API_URL}/api/listing/delete/${listingId}`,
          {
            method: "DELETE",
-           credentials: "include",
+           
          },
        );
        const data = await res.json();
