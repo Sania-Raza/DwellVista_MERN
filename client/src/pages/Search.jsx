@@ -48,6 +48,7 @@ export default function Search() {
       });
     }
 
+    // fetching listings
     const fetchListings = async () => {
       setLoading(true);
       setShowMore(false);
