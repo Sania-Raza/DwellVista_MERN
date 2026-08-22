@@ -48,21 +48,20 @@ export default function Home() {
   return (
     <div>
       {/* top */}
-      <div className="flex flex-col gap-6 p-20 px-3 max-w-6xl mx-auto">
+      <div className="flex flex-col gap-6 p-20 px-3 max-w-6xl mx-auto items-start">
         <h1 className="text-slate-700 font-bold text-3xl lg:text-6xl">
           Find your next <span className="text-slate-500">perfect</span>
           <br />
           place with ease
         </h1>
         <div className="text-gray-400 text-xs sm:text-sm">
-          DwellVista is the best place to find your next perfect place to
-          live.
+          DwellVista is the best place to find your next perfect place to live.
           <br />
           We have a wide range of properties for you to choose from.
         </div>
         <Link
           to={"/search"}
-          className="text-xs sm:text-sm text-blue-800 font-bold hover:underline"
+          className="inline-block text-blue-700 font-semibold px-1 py-1 border border-transparent rounded-md transition-all duration-200 hover:border-blue-700 hover:bg-blue-50"
         >
           Let's get started...
         </Link>
@@ -96,7 +95,7 @@ export default function Home() {
                 Recent offers
               </h2>
               <Link
-                className="text-sm text-blue-800 hover:underline"
+                className="text-blue-700 text-sm transition-colors duration-200 hover:text-blue-900 hover:underline"
                 to={"/search?offer=true"}
               >
                 Show more offers
