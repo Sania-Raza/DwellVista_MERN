@@ -42,7 +42,7 @@ export const updateListing = async (req, res, next) => {
     const updatedListing = await Listing.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true },
+      { returnDocument: 'after' },
     );
     res.status(200).json(updatedListing);
   } catch (error) {
