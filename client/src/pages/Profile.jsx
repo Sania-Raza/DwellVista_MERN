@@ -143,6 +143,7 @@ export default function Profile() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/signout`,
         {
+          method: "GET",
           credentials: "include",
        }
       );
@@ -164,6 +165,7 @@ export default function Profile() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/user/listings/${currentUser._id}`,
         {
+          method: "GET",
     credentials: "include",
   }
       );
