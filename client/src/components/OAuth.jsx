@@ -11,55 +11,58 @@ import { FaGoogle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice.js";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
 export default function OAuth() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-
+const [checkingRedirect, setCheckingRedirect] = useState(true);
   // Handle Google login after mobile redirect
   useEffect(() => {
-    const handleRedirectResult = async () => {
-      try {
-        const result = await getRedirectResult(auth);
+  const handleRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
 
-        if (!result) return;
-
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/auth/google`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              name: result.user.displayName,
-              email: result.user.email,
-              photo: result.user.photoURL,
-            }),
-          }
-        );
-
-        const data = await res.json();
-
-        if (data.success === false) {
-          console.log(data.message);
-          return;
-        }
-
-        dispatch(signInSuccess(data));
-        navigate("/");
-      } catch (error) {
-        console.log("Google redirect login error:", error);
+      if (!result) {
+        setCheckingRedirect(false);
+        return;
       }
-    };
 
-    handleRedirectResult();
-  }, [auth, dispatch, navigate]);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/google`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            name: result.user.displayName,
+            email: result.user.email,
+            photo: result.user.photoURL,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok || data.success === false) {
+        throw new Error(data.message || "Google authentication failed");
+      }
+
+      dispatch(signInSuccess(data));
+      navigate("/");
+    } catch (error) {
+      console.error("Google redirect error:", error);
+    } finally {
+      setCheckingRedirect(false);
+    }
+  };
+
+  handleRedirectResult();
+}, [dispatch, navigate]);
 
   const handleGoogleClick = async () => {
     try {
