@@ -2,14 +2,14 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import path from "path";
-import { fileURLToPath } from "url";
+// import path from "path";
+// import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import dns from "dns";
 import userRoutes from "./routes/userRoute.js";
 import cors from "cors";
 import listingRoutes from "./routes/listingRoutes.js";
-
+// const PORT = process.env.PORT || 3000;
 
 import authRoute from "./routes/authRoute.js";
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
@@ -20,15 +20,15 @@ mongoose
   .catch((err) => console.log("MongoDB error:", err));
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-const clientPath = path.join(__dirname, "../client/dist");
+// const clientPath = path.join(__dirname, "../client/dist");
 
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: true,
     credentials: true,
   }),
 );
@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoute);
 app.use("/api/listing",listingRoutes);
-app.use(express.static(clientPath));
+// app.use(express.static(clientPath));
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
@@ -54,6 +54,8 @@ app.get(/.*/, (req, res) => {
   res.sendFile(path.join(clientPath, "index.html"));
 });
 
-app.listen(3000, () => {
-  console.log("Server running at PORT 3000");
-});
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+export default app;
