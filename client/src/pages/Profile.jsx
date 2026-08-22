@@ -32,6 +32,7 @@ export default function Profile() {
         `${import.meta.env.VITE_API_URL}/api/user/upload-avatar`,
         {
           method: "POST",
+           credentials: "include",
           body: formData,
         },
       );
@@ -52,6 +53,7 @@ export default function Profile() {
           headers: {
             "Content-Type": "application/json",
           },
+           credentials: "include",
           body: JSON.stringify({
             userId: currentUser._id,
             avatar: data.imageUrl,
