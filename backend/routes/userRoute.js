@@ -7,6 +7,7 @@ import {
   test,
   updateUser,
   getUserListings,
+  getUser,
 } from "../controllers/userController.js";
 import { verifyToken } from "../utlis/verifyUser.js";
 
@@ -66,10 +67,11 @@ router.post("/update-avatar", async (req, res, next) => {
   }
 });
 
-router.post('/update/:id',verifyToken ,updateUser)
+router.post("/update/:id", verifyToken, updateUser);
 
-router.delete('/delete/:id',verifyToken,deleteUser);
-router.get('/listings/:id' , verifyToken, getUserListings);
+router.delete("/delete/:id", verifyToken, deleteUser);
+router.get("/listings/:id", verifyToken, getUserListings);
+router.get("/:id", getUser);
 
 router.post("/upload-image", upload.single("image"), async (req, res) => {
   try {
@@ -100,7 +102,5 @@ router.post("/upload-image", upload.single("image"), async (req, res) => {
     });
   }
 });
-
-
 
 export default router;
