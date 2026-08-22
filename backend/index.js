@@ -1,48 +1,41 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
-// import path from "path";
-// import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import dns from "dns";
-import userRoutes from "./routes/userRoute.js";
 import cors from "cors";
-import listingRoutes from "./routes/listingRoutes.js";
-// const PORT = process.env.PORT || 3000;
 
+import userRoutes from "./routes/userRoute.js";
 import authRoute from "./routes/authRoute.js";
+import listingRoutes from "./routes/listingRoutes.js";
+
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
-mongoose
-  .connect(process.env.MONGO)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB error:", err));
-
 const app = express();
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
 
-// const clientPath = path.join(__dirname, "../client/dist");
-
-
+// Middleware
 app.use(
   cors({
     origin: true,
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
+// Routes
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoute);
-app.use("/api/listing",listingRoutes);
-// app.use(express.static(clientPath));
+app.use("/api/listing", listingRoutes);
 
+// Error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
+
   return res.status(statusCode).json({
     success: false,
     statusCode,
@@ -50,12 +43,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(clientPath, "index.html"));
+// Test route
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "DwellVista API is running!",
+  });
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("MongoDB error:", err));
 
 export default app;
