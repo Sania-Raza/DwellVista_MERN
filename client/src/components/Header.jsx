@@ -52,13 +52,13 @@ export default function Header() {
 
         <ul className="flex gap-4">
           <Link to="/">
-            <li className="hidden sm:inline text-slate-700 hover:underline">
+            <li className="hidden sm:inline text-slate-700 hover:border hover:border-blue-600 hover:text-blue-800 hover:px-2 hover:py-1 transition-all ">
               Home
             </li>
           </Link>
 
           <Link to="/about">
-            <li className="hidden sm:inline text-slate-700 hover:underline">
+            <li className="hidden sm:inline text-slate-700 hover:border hover:border-blue-600 hover:text-blue-800 hover:px-2 hover:py-1 transition-all">
               About
             </li>
           </Link>
@@ -71,7 +71,9 @@ export default function Header() {
                 alt="img"
               />
             ) : (
-              <li className="text-slate-700 hover:underline">Sign in</li>
+              <li className="text-slate-800 hover:border hover:text-blue-700 hover:border-blue-600  hover:px-2 hover:py-1 transition-all">
+                Sign in
+              </li>
             )}
           </Link>
         </ul>
